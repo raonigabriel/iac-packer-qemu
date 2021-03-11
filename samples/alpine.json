@@ -1,0 +1,58 @@
+{
+    "description" : "A GRUB, alpine-based image with docker pre-installed.", 
+    "builders": [
+        {
+            "accelerator": "tcg",
+            "cpus": 1,
+            "memory": 384,
+            "boot_command": [
+                "root<enter><wait>",
+                "ip link set eth0 up && udhcpc -i eth0 &&<enter>",
+                "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/alpine-setup.sh &&<enter>",
+                "chmod +x alpine-setup.sh && ./alpine-setup.sh<enter>"
+            ],
+            "boot_wait": "60s",
+            "disk_size": "2000M",
+            "format": "raw",
+            "headless": "true",
+            "http_directory": "www",
+            "iso_checksum": "sha256:2bfba779f5d6334543f7b2242a2a8956952c3170d083f255589c2c5c8fadc06a",
+            "iso_url": "https://dl-cdn.alpinelinux.org/alpine/v3.13/releases/x86_64/alpine-virt-3.13.2-x86_64.iso",
+            "output_directory": "images/alpine",
+            "qemuargs": [
+                [
+                    "-device", "virtio-net,netdev=user.0"
+                ]
+            ],
+            "vnc_bind_address" : "0.0.0.0",
+            "vnc_port_min" : 5900,
+            "vnc_port_max" : 5900,
+            "host_port_min" : 2222,
+            "host_port_max" : 2222,
+            "http_port_min" : 8000,
+            "http_port_max" : 8000,
+            "shutdown_command": "/sbin/poweroff",
+            "ssh_handshake_attempts": 20,
+            "ssh_username": "root",
+            "ssh_password" : "alpine",
+            "ssh_timeout": "5m",
+            "type": "qemu",
+            "vm_name": "disk.raw",
+            "net_device" : "virtio-net",
+            "disk_interface" : "virtio",
+            "disk_detect_zeroes" : "on"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "www/alpine-post-install.sh"
+        },
+        {
+            "type": "file",
+            "sources": "./authorized_keys",
+            "destination" : "/root/.ssh/authorized_keys",
+            "generated": true
+        }
+    ]
+}
