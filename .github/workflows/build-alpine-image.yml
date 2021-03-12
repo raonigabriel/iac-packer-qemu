@@ -20,6 +20,13 @@ jobs:
       run: packer build alpine.json 2>/dev/null
     - name: Compact the disk image
       run: GZIP=-9 tar -czf images/alpine.tar.gz disk.raw -C images/alpine
+    - name: Upload keypair
+      uses: actions/upload-artifact@v2
+      with:
+        name: keypair
+        path: |
+          ~/.ssh/id_rsa
+          ~/.ssh/id_rsa.pub
     - name: Upload disk image
       uses: actions/upload-artifact@v2
       with:
