@@ -17,7 +17,7 @@ jobs:
 
     - name: Generate SSH keypair
       run:  |
-        pwd
+        mkdir -p ~/.ssh
         cat /dev/zero | ssh-keygen -b 4096 -q -N "" -f ~/.ssh/id_rsa
     - name: Copy public key as authorized_keys
       run: cp ~/.ssh/id_rsa.pub /samples/authorized_keys
