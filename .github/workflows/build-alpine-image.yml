@@ -16,6 +16,8 @@ jobs:
       run:  |
         echo "uid=$(id -u)"
         echo "gid=$(id -g)"
+        pwd
+        whoami
     - name: Generate SSH keypair
       run:  cat /dev/zero | ssh-keygen -b 4096 -q -N "" &>/dev/null
     - name: Copy public key as authorized_keys
