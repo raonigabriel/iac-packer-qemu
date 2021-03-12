@@ -8,17 +8,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: alpine:latest
+      image: raonigabriel/iac-packer-qemu
 
     steps:
-    - name: Build Alpine raw disk image
-      run: |
-        apk update
-        apk add git
-        git --version > git-version.txt
 
+    - name: Generate SSH keypair
+      run:  cat /dev/zero | ssh-keygen -b 4096 -q -N "" &>/dev/null
+    - name: Copy public key as authorized_keys
+      run: cp ~/.ssh/id_rsa.pub /samples/authorized_keys
+    - name: Build Alpine raw disk image
+      run: packer build alpine.json 2>/dev/null
+    - name: Compact the disk image
+      run: GZIP=-9 tar -czf images/alpine.tar.gz disk.raw -C images/alpine
     - name: Upload disk image
       uses: actions/upload-artifact@v2
       with:
-        name: git-version
-        path: git-version.txt
+        name: alpine-image
+        path: images/alpine.tar.gz
