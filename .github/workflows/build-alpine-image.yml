@@ -36,4 +36,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: alpine-image
-        path: images/alpine.tar.gz
+        path: /samples/images/alpine.tar.gz
